@@ -25,11 +25,11 @@ final class UserModel: Model {
     @OptionalField(key: FieldKeys.userName)
     var userName: String?
     
-    @Field(key: FieldKeys.email)
-    var email: String
+    @OptionalField(key: FieldKeys.email)
+    var email: String?
     
-    @Field(key: FieldKeys.password)
-    var password: String
+    @OptionalField(key: FieldKeys.password)
+    var password: String?
     
     @OptionalField(key: FieldKeys.city)
     var city: String?
@@ -82,7 +82,7 @@ final class UserModel: Model {
     
     
     //update
-    init(name: String?, lastName: String?, userName: String?, email: String, password: String, city: String?, postalcode: String?, country: String?, bio: String?, createdAt: Date?, updateAt: Date?) {
+    init(name: String?, lastName: String?, userName: String?, email: String?, password: String?, city: String?, postalcode: String?, country: String?, bio: String?, createdAt: Date?, updateAt: Date?) {
         self.name = name
         self.lastName = lastName
         self.userName = userName
