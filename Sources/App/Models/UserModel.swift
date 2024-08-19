@@ -114,6 +114,10 @@ final class UserModel: Model {
         self.userImage = userImage
     }
     
+    init(role: RoleEnum.RawValue) {
+        self.role  = role
+    }
+    
 
 }
 
