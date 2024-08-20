@@ -118,7 +118,49 @@ final class UserModel: Model {
         self.role  = role
     }
     
+    final class Public: Content {
+        var id: UUID?
+        var userName: String?
+        var email: String?
+        var name: String?
+        var lastName: String?
+        var updatedAt: Date?
+        var city: String?
+        var subscriptionIsActiveTill: Date?
+        var myCourses: [UUID]?
+        var completedCourses: [UUID]?
+        var bio: String?
+        
+        init(id: UUID? , userName: String?, email: String? , name: String?, lastName: String? , updatedAt: Date? , city: String? , subscriptionIsActiveTill: Date? , myCourses: [UUID]? , completedCourses: [UUID]? , bio: String? ) {
+            self.id = id
+            self.userName = userName
+            self.email = email
+            self.name = name
+            self.lastName = lastName
+            self.updatedAt = updatedAt
+            self.city = city
+            self.subscriptionIsActiveTill = subscriptionIsActiveTill
+            self.myCourses = myCourses
+            self.completedCourses = completedCourses
+            self.bio = bio
+        }
+    }
+    
 
 }
 
 extension UserModel: Content {}
+
+extension UserModel {
+    func convertToPublic() -> UserModel.Public {
+        return UserModel.Public(id: id, userName: userName, email: email, name: name, lastName: lastName, updatedAt: updatedAt, city: city, subscriptionIsActiveTill: subscriptionIsActiveTill, myCourses: myCourses, completedCourses: completedCourses, bio: bio)
+    }
+}
+
+extension Collection where Element: UserModel {
+    func convertToPublic() -> [UserModel.Public] {
+        return self.map {
+            $0.convertToPublic()
+        }
+    }
+}
