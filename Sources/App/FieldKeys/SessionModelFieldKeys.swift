@@ -14,7 +14,7 @@ extension SessionModel {
     struct FieldKeys {
         static var title: FieldKey {"title"}
         static var mp4URL: FieldKey {"mp4URL"}
-        static var h1sURL: FieldKey {"h1sURL"}
+        static var hlsURL: FieldKey {"hlsURL"}
         static var createdAt: FieldKey {"createdAt"}
         static var updatedAt: FieldKey {"updatedAt"}
         static var publishDate: FieldKey {"publishDate"}

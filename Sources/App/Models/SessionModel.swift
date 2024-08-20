@@ -23,8 +23,8 @@ final class SessionModel: Model {
     var mp4URL: URL?
 
     
-    @OptionalField(key: FieldKeys.h1sURL)
-    var h1sURL: URL?
+    @OptionalField(key: FieldKeys.hlsURL)
+    var hlsURL: URL?
     
     @Timestamp(key: FieldKeys.createdAt, on: .create)
     var createdAt: Date?
@@ -54,10 +54,10 @@ final class SessionModel: Model {
         
     }
     
-    init(title: String?, mp4URL: URL?, h1sURL: URL?, createdAt: Date?, updatedAt: Date?, publishDate: Date?, price: PriceEnum.RawValue?, article: String?, course: CourseModel.IDValue, slug: String?) {
+    init(title: String?, mp4URL: URL?, hlsURL: URL?, createdAt: Date?, updatedAt: Date?, publishDate: Date?, price: PriceEnum.RawValue?, article: String?, course: CourseModel.IDValue, slug: String?) {
         self.title = title
         self.mp4URL = mp4URL
-        self.h1sURL = h1sURL
+        self.hlsURL = hlsURL
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.publishDate = publishDate
