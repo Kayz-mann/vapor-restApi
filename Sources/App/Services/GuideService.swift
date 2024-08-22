@@ -54,7 +54,7 @@ struct GuideService: ContentProtocol {
     }
     
     static func getAll(_ req: Vapor.Request) async throws -> [GuideModel] {
-        <#code#>
+        return try await GuideModel.query(on: req.db).all()
     }
     
     static func update(_ req: Vapor.Request, object: String, updateDTO: UpdateGuideDTO) async throws -> GuideModel {

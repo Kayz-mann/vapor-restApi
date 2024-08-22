@@ -25,11 +25,11 @@ final class UserModel: Model {
     @OptionalField(key: FieldKeys.userName)
     var userName: String?
     
-    @OptionalField(key: FieldKeys.email)
-    var email: String?
+    @Field(key: FieldKeys.email)
+    var email: String
     
-    @OptionalField(key: FieldKeys.password)
-    var password: String?
+    @Field(key: FieldKeys.password)
+    var password: String
     
     @OptionalField(key: FieldKeys.city)
     var city: String?
@@ -82,7 +82,7 @@ final class UserModel: Model {
     
     
     //update
-    init(name: String?, lastName: String?, userName: String?, email: String?, password: String?, city: String?, postalcode: String?, country: String?, bio: String?, createdAt: Date?, updateAt: Date?) {
+    init(name: String?, lastName: String?, userName: String?, email: String, password: String, city: String?, postalcode: String?, country: String?, bio: String?, createdAt: Date?, updateAt: Date?) {
         self.name = name
         self.lastName = lastName
         self.userName = userName
@@ -121,7 +121,7 @@ final class UserModel: Model {
     final class Public: Content {
         var id: UUID?
         var userName: String?
-        var email: String?
+        var email: String
         var name: String?
         var lastName: String?
         var updatedAt: Date?
@@ -131,7 +131,7 @@ final class UserModel: Model {
         var completedCourses: [UUID]?
         var bio: String?
         
-        init(id: UUID? , userName: String?, email: String? , name: String?, lastName: String? , updatedAt: Date? , city: String? , subscriptionIsActiveTill: Date? , myCourses: [UUID]? , completedCourses: [UUID]? , bio: String? ) {
+        init(id: UUID? , userName: String?, email: String , name: String?, lastName: String? , updatedAt: Date? , city: String? , subscriptionIsActiveTill: Date? , myCourses: [UUID]? , completedCourses: [UUID]? , bio: String? ) {
             self.id = id
             self.userName = userName
             self.email = email
@@ -164,3 +164,17 @@ extension Collection where Element: UserModel {
         }
     }
 }
+
+extension UserModel: Authenticatable {}
+
+extension UserModel: ModelAuthenticatable {
+    static let usernameKey = \UserModel.$email
+    static let passwordHashKey = \UserModel.$password
+    
+    func verify(password:String) throws -> Bool {
+        try Bcrypt.verify(password, created: self.password)
+    }
+}
+
+extension UserModel: ModelSessionAuthenticatable {}
+extension UserModel: ModelCredentialsAuthenticatable {}

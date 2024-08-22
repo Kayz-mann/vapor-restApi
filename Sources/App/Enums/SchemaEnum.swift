@@ -13,4 +13,5 @@ enum SchemaEnum: String {
     case guides
     case sessions
     case articles
+    case tokens
 }

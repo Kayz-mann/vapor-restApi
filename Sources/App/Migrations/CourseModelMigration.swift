@@ -11,12 +11,11 @@ import Fluent
 import Vapor
 
 struct CourseModelMigration: AsyncMigration {
-    let schema = CourseModel.schema.self
+    let schema = CourseModel.schema
     let keys = CourseModel.FieldKeys.self
     
     func prepare(on database: any Database) async throws {
         try await database.schema(schema)
-        
             .id()
             .field(keys.title, .string)
             .field(keys.description, .string)
@@ -33,14 +32,13 @@ struct CourseModelMigration: AsyncMigration {
             .field(keys.updatedAt, .datetime)
             .field(keys.publishDate, .datetime)
             .field(keys.tags, .array(of: .string))
-        //unique to make this param unique
+            .field(keys.assets, .string)  // Adding the assets field
             .unique(on: keys.syllabus)
-            .unique(on: keys.assets)
+            .unique(on: keys.assets)  // Applying unique constraint on the assets field
             .create()
-
     }
     
-    func revert (on database: Database) async throws {
+    func revert(on database: Database) async throws {
         try await database.schema(schema).delete()
     }
 }
