@@ -91,9 +91,8 @@ final class CourseModel: Model {
         self.status = status
     }
 
-
-
-
-
-
 }
+
+
+extension CourseModel: Content{}
+
