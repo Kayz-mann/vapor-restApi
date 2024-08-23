@@ -24,3 +24,15 @@ protocol ContentProtocol {
     static func update (_ req: request, object: String, updateDTO: updateDTO) async throws -> model
     static func delete(_ req: request, object: String) async throws -> status
 }
+
+protocol ContentHandlerProtocol {
+    associatedtype answer
+    associatedtype request
+    associatedtype status
+    
+    func create(_ req: request) async throws -> answer
+    func get(_ req: request) async throws -> answer
+    func update(_ req: request) async throws -> answer
+    func delete(_ req: request) async throws -> status
+}
+

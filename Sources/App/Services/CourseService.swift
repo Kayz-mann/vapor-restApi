@@ -18,7 +18,7 @@ struct CourseService: ContentProtocol {
     typealias createDTO = CreateCourseDTO
     typealias updateDTO = UpdateCourseDTO
     
-    static func create(_ req: Vapor.Request, createDTO: CreateCourseDTO, author: UserModel) async throws -> Vapor.HTTPStatus {
+    static func create(_ req: Vapor.Request, createDTO: CreateCourseDTO, author: UserModel) async throws -> CourseModel {
         let slug = createDTO.title?.replacingOccurrences(of: " ", with: "-").lowercased() // Replaced empty string with space
         
         let course = CourseModel(
@@ -40,7 +40,7 @@ struct CourseService: ContentProtocol {
             publishDate: createDTO.publishDate)
         
         try await course.save(on: req.db)
-        return .ok
+        return course
     }
     
     static func get(_ req: Vapor.Request, object: String) async throws -> CourseModel {

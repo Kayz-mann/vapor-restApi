@@ -50,7 +50,7 @@ final class GuideModel: Model {
     
     init()  {}
     
-    init(title: String?, description: String?, headerImage: URL?, price: PriceEnum.RawValue?, status: StatusEnum.RawValue?, slug: String?, tags: [String]?, publishDate: Date?, createdAt: Date?, updatedAt: Date?) {
+    init(title: String?, description: String?, headerImage: URL?, price: PriceEnum.RawValue?, status: StatusEnum.RawValue?, author: String?, slug: String?, tags: [String]?, publishDate: Date?, createdAt: Date?, updatedAt: Date?) {
         self.title = title
         self.description = description
         self.headerImage = headerImage

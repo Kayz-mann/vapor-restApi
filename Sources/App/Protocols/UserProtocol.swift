@@ -25,8 +25,16 @@ protocol UserProtocol {
     static func delete(_ req: request, object: String) async throws -> status
 }
 
-protocol UpdateUserProtocol {
+
+protocol UserHandlerProtocol {
+    associatedtype answer
+    associatedtype request
+    associatedtype status
     
+    func create(_ req: request) async throws -> answer
+    func get(_ req: request) async throws -> answer
+    func update(_ req: request) async throws -> answer
+    func delete(_ req: request) async throws -> status
 }
 
 

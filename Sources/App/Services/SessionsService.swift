@@ -25,7 +25,7 @@ struct SessionsService: ContentProtocol {
     
     
     
-    static func create(_ req: Vapor.Request, createDTO: CreateSessionDTO, author: UserModel) async throws -> Vapor.HTTPStatus {
+    static func create(_ req: Vapor.Request, createDTO: CreateSessionDTO, author: UserModel) async throws -> SessionModel{
         guard let course = try await CourseModel.find(createDTO.course, on: req.db) else {
             throw Abort(.notFound, reason: "Course with ID of \(createDTO.course) could not be found")
         }
@@ -44,7 +44,7 @@ struct SessionsService: ContentProtocol {
             slug: slug)
         
         try await session.save(on: req.db)
-        return .ok
+        return session
     }
     
     static func get(_ req: Vapor.Request, object: String) async throws -> SessionModel {

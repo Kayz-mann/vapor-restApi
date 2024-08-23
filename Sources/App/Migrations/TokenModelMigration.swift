@@ -16,9 +16,9 @@ struct TokenModelMigration: AsyncMigration {
     func prepare(on database: any Database) async throws {
         try await database.schema(schema)
             .id()
-            .field(keys.value, .string)  // Define only once
+            .field(keys.value, .string)
             .field(keys.userId, .uuid)
-            .create() 
+            .create()
     }
     
     func revert(on database: Database) async throws {

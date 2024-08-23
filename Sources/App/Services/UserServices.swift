@@ -33,7 +33,7 @@ struct UserServices: UserProtocol {
     }
     
     
-    static func update(_ req: Vapor.Request, object: String, updateDTO: UpdateUserDTO) async throws -> Vapor.HTTPStatus {
+    static func update(_ req: Vapor.Request, object: String, updateDTO: UpdateUserDTO) async throws -> UserModel.Public {
         let uuid = UUID(uuidString: object)
         
         guard let user = try await UserModel.find(uuid, on: req.db) else {
@@ -50,8 +50,8 @@ struct UserServices: UserProtocol {
         user.bio = updateDTO.bio ?? user.bio
         
         try await user.save(on: req.db)
-//        return user.convertToPublic()
-        return .ok
+        return user.convertToPublic()
+//        return .ok
     }
     
     static func delete(_ req: Vapor.Request, object: String) async throws -> Vapor.HTTPStatus {

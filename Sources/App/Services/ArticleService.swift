@@ -24,7 +24,7 @@ struct ArticleService: ContentProtocol {
     typealias updateDTO = UpdateArticleDTO
     
     
-    static func create(_ req: Vapor.Request, createDTO: CreateArticleDTO, author: UserModel) async throws -> Vapor.HTTPStatus {
+    static func create(_ req: Vapor.Request, createDTO: CreateArticleDTO, author: UserModel) async throws -> ArticleModel {
         let slug = createDTO.title?.replacingOccurrences(of: "", with: "_")
         guard let guide =  try await GuideModel.find(createDTO.guide, on: req.db) else {
             throw Abort(.notFound, reason: "Could not find the guide with ID of \(String(describing: createDTO.guide))")
@@ -47,7 +47,7 @@ struct ArticleService: ContentProtocol {
             tags: createDTO.tags)
         
         try await article.save(on: req.db)
-        return .ok
+        return article
     }
     
     static func get(_ req: Vapor.Request, object: String) async throws -> ArticleModel {

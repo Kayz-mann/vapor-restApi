@@ -25,7 +25,8 @@ struct GuideService: ContentProtocol {
     typealias updateDTO = UpdateGuideDTO
     
     
-    static func create(_ req: Vapor.Request, createDTO: CreateGuideDTO, author: UserModel) async throws -> Vapor.HTTPStatus {
+    static func create(_ req: Vapor.Request, createDTO: CreateGuideDTO, author: UserModel) async throws -> GuideModel {
+        let fullAuthor = "\(author.name) \(author.lastName)"
         let slug = createDTO.title?.replacingOccurrences(of: "", with: "_")
         
         let guide = GuideModel(
@@ -34,14 +35,15 @@ struct GuideService: ContentProtocol {
             headerImage: createDTO.headerImage,
             price: createDTO.price,
             status: createDTO.status ?? StatusEnum.draft.rawValue,
+            author: fullAuthor,
             slug: slug,
             tags: createDTO.tags,
             publishDate: createDTO.publishDate,
             createdAt: Date(),
             updatedAt: Date())
         
-        try await guide.save(on: req.db)
-        return .ok
+       var res =  try await guide.save(on: req.db)
+        return guide
     }
     
     static func get(_ req: Vapor.Request, object: String) async throws -> GuideModel {
