@@ -10,6 +10,20 @@ import Fluent
 import Vapor
 
 struct UserServices: UserProtocol {
+    
+    typealias Model = UserModel
+    
+    typealias answer = UserModel.Public
+    
+    typealias request = Request
+    
+    typealias createDTO = CreateUserDTO
+    
+    typealias updateDTO = UpdateUserDTO
+    
+    typealias status = HTTPStatus
+
+    
     static func create(_ req: Vapor.Request, _createDTO createDTO: CreateUserDTO) async throws -> UserModel.Public {
         let user = UserModel(
             username: createDTO.userName,
@@ -64,17 +78,6 @@ struct UserServices: UserProtocol {
         return .ok
     }
     
-    typealias Model = UserModel
-    
-    typealias answer = UserModel.Public
-    
-    typealias request = Request
-    
-    typealias createDTO = CreateUserDTO
-    
-    typealias updateDTO = UpdateUserDTO
-    
-    typealias status = HTTPStatus
     
     
 }

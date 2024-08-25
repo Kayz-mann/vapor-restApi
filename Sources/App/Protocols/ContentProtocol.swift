@@ -18,7 +18,7 @@ protocol ContentProtocol {
     associatedtype updateDTO
     
     
-    static func create(_ req: request, createDTO: createDTO, author: UserModel) async throws -> status
+    static func create(_ req: request, createDTO: createDTO, author: UserModel) async throws -> model
     static func get(_ req: request, object: String) async throws -> model
     static func getAll(_ req: request) async throws -> [model]
     static func update (_ req: request, object: String, updateDTO: updateDTO) async throws -> model

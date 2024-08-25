@@ -49,11 +49,14 @@ func routes(_ app: Application) throws {
       adminTokenAuthGroup.patch("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.slug.rawValue)", use: courseController.update)
       adminTokenAuthGroup.delete("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.slug.rawValue)", use: courseController.delete)
     
+    
+    
     adminTokenAuthGroup.post("\(RoutesEnum.guides.rawValue)", use: guideController.create)
     adminTokenAuthGroup.get("\(RoutesEnum.guides.rawValue)", "\(RouteParameter.slug.rawValue)", use: guideController.get)
     adminTokenAuthGroup.get("\(RoutesEnum.guides.rawValue)", use: guideController.getAll)
     adminTokenAuthGroup.patch("\(RoutesEnum.guides.rawValue)",  "\(RouteParameter.slug.rawValue)",  use: guideController.update)
     adminTokenAuthGroup.delete("\(RoutesEnum.guides.rawValue)",  "\(RouteParameter.slug.rawValue)", use: guideController.delete)
+    
     
     
     adminTokenAuthGroup.post("\(RoutesEnum.articles.rawValue)", use: articleController.create)

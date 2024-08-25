@@ -18,8 +18,11 @@ struct GuideController: ContentHandlerProtocol {
     typealias status = HTTPStatus
     
     func create(_ req: Vapor.Request) async throws -> GuideModel {
-        guard let author =  try req.auth.get(UserModel.self) else { return <#default value#> }
-        let guide =  try req.content.decode(CreateGuideDTO.self)
+        guard let author = try? req.auth.get(UserModel.self) else {
+            throw Abort(.unauthorized) // Or another appropriate error
+        }
+        
+        let guide = try req.content.decode(CreateGuideDTO.self)
         return try await GuideService.create(req, createDTO: guide, author: author)
     }
 

@@ -10,7 +10,7 @@ import Vapor
 import Fluent
 
 protocol UserProtocol {
-    associatedtype Model
+    associatedtype model
     associatedtype answer
     associatedtype request
     associatedtype createDTO
@@ -18,10 +18,10 @@ protocol UserProtocol {
     associatedtype status
     
     
-    static func create(_ req: request, _createDTO: createDTO) async throws -> answer
+    static func create(_ req: request, _createDTO: createDTO) async throws -> model
     static func get(_ req: request, object: String) async throws -> answer
 //    static func getAll(_ req: request) async throws -> answer
-    static func update(_ req: request, object: String, updateDTO: updateDTO) async throws -> status
+    static func update(_ req: request, object: String, updateDTO: updateDTO) async throws -> answer
     static func delete(_ req: request, object: String) async throws -> status
 }
 
