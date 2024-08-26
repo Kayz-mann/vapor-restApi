@@ -119,3 +119,27 @@ extension ArticleService: TransformProtocol {
     
     typealias answerWithID = UUID
 }
+
+
+extension ArticleService: BackendContentFilterProtocol {
+   static func getByStatus(_ req: Vapor.Request, status: StatusEnum.RawValue) async throws -> [ArticleModel] {
+        let articles = try await ArticleModel.query(on: req.db)
+            .filter(\.$status == status)
+            .all()
+        
+        return articles
+    }
+    
+    
+   static func search(_ req: Vapor.Request, term: String) async throws -> [ArticleModel] {
+        let query =  try await ArticleModel.query(on: req.db)
+            .group(.or) { or in
+                or.filter(\.$title =~ term)
+            }.all()
+        
+        return query
+        
+    }
+    
+    
+}

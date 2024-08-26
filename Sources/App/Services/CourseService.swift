@@ -104,3 +104,27 @@ extension CourseService: TransformProtocol {
     
     typealias answerWithID = UUID
 }
+
+
+extension CourseService: BackendContentFilterProtocol {
+    func getByStatus(_ req: Vapor.Request, status: StatusEnum.RawValue) async throws -> [CourseModel] {
+        let courses =  try await CourseModel.query(on: req.db)
+            .filter(\.$status == status)
+            .all()
+        return courses
+    }
+    
+    
+    func search(_ req: Vapor.Request, term: String) async throws -> [CourseModel] {
+        let courses =  try await CourseModel.query(on: req.db)
+            .group(.or) {or in
+                or.filter(\.$title =~ term)
+            }.all()
+        
+        return courses
+    }
+    
+    
+}
+
+

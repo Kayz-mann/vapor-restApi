@@ -12,8 +12,18 @@ enum RoutesEnum: String {
     case courses
     case articles
     case sessions
+    case login
+    case register
+    case profile
+    case delete
+    case update
+    case users
+    case search
 }
 
-enum RouteParameter: String {
-    case slug
+enum RouteParameter: String, Equatable {
+    case slug = ":slug"
+    case id = ":id"
+    case status = ":status"
+    case term = ":term"
 }

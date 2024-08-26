@@ -102,3 +102,24 @@ extension GuideService: TransformProtocol {
     }
     typealias answerWithID = UUID
 }
+
+
+
+extension GuideService: BackendContentFilterProtocol {
+    func getByStatus(_ req: Vapor.Request, status: StatusEnum.RawValue) async throws -> [GuideModel] {
+       let guides =  try await GuideModel.query(on: req.db)
+           .filter(\.$status == status)
+           .all()
+       return guides
+   }
+
+    func search(_ req: Vapor.Request, term: String) async throws -> [GuideModel] {
+       let guides =  try await GuideModel.query(on: req.db)
+           .group(.or) {or in
+               or.filter(\.$title =~ term)
+           }.all()
+       
+       return guides
+   }
+
+}

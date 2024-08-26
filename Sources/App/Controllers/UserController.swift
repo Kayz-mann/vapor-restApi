@@ -38,3 +38,12 @@ struct UserController: UserHandlerProtocol {
     }
 
 }
+
+
+extension UserController: SearchUserProtocol {
+    func search(_ req: Request, term: String) async throws -> [UserModel.Public] {
+        let term =  try req.parameters.get("term")
+        
+        return try await UserServices.search(req, term: term!)
+    }
+}

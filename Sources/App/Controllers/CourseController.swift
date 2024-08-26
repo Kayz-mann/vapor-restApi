@@ -46,3 +46,34 @@ struct CourseController: ContentHandlerProtocol {
     }
 }
 
+
+
+
+extension CourseController: BackendFilterHandlerProtocol {
+    func getByStatus(_ req: Request) async throws -> [CourseModel] {
+        let status = req.parameters.get("status")
+        let courseService = CourseService()  // Create an instance of CourseService
+        return try await courseService.getByStatus(req, status: status!)
+    }
+    
+    func search(_ req: Request) async throws -> [CourseModel] {
+        let term = req.parameters.get("term")
+        let courseService = CourseService()  // Create an instance of CourseService
+        return try await courseService.search(req, term: term!)
+    }
+}
+
+    
+    func search(_ req: Vapor.Request, term: String) async throws -> [CourseModel] {
+        let courses =  try await CourseModel.query(on: req.db)
+            .group(.or) {or in
+                or.filter(\.$title =~ term)
+            }.all()
+        
+        return courses
+    }
+    
+    
+
+
+

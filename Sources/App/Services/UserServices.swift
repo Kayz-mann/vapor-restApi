@@ -81,3 +81,19 @@ struct UserServices: UserProtocol {
     
     
 }
+
+extension UserServices: SearchUserProtocol {
+    static func search(_ req: Vapor.Request, term: String) async throws -> [UserModel.Public] {
+        let users =  try await UserModel.query(on: req.db)
+            .group(.or) {or in
+                or.filter(\.$userName =~ term)
+                or.filter(\.$name =~ term)
+                or.filter(\.$email =~ term)
+                or.filter(\.$lastName =~ term)
+            }.all()
+        
+        return users.convertToPublic()
+    }
+    
+    
+}

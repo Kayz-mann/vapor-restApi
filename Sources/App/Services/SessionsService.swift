@@ -108,3 +108,24 @@ extension SessionsService: TransformProtocol {
     typealias answerWithID = UUID
 }
 
+extension SessionsService: BackendContentFilterProtocol {
+    func getByStatus(_ req: Vapor.Request, status: StatusEnum.RawValue) async throws -> [SessionModel] {
+        let sessions =  try await SessionModel.query(on: req.db)
+            .filter(\.$status == status)
+            .all()
+        return sessions
+    }
+    
+    func search(_ req: Vapor.Request, term: String) async throws -> [SessionModel] {
+        let sessions =  try await SessionModel.query(on: req.db)
+            .group(.or) {or in
+                or.filter(\.$title =~ term)
+            }.all()
+        
+        return sessions
+    }
+    
+    
+}
+
+

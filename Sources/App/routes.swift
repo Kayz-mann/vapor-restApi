@@ -48,6 +48,8 @@ func routes(_ app: Application) throws {
       adminTokenAuthGroup.get("\(RoutesEnum.courses.rawValue)", use: courseController.getAll)
       adminTokenAuthGroup.patch("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.slug.rawValue)", use: courseController.update)
       adminTokenAuthGroup.delete("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.slug.rawValue)", use: courseController.delete)
+    adminTokenAuthGroup.get("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.status.rawValue)", use: courseController.getByStatus)
+    adminTokenAuthGroup.get("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.term)", use: courseController.search)
     
     
     
@@ -56,6 +58,9 @@ func routes(_ app: Application) throws {
     adminTokenAuthGroup.get("\(RoutesEnum.guides.rawValue)", use: guideController.getAll)
     adminTokenAuthGroup.patch("\(RoutesEnum.guides.rawValue)",  "\(RouteParameter.slug.rawValue)",  use: guideController.update)
     adminTokenAuthGroup.delete("\(RoutesEnum.guides.rawValue)",  "\(RouteParameter.slug.rawValue)", use: guideController.delete)
+    adminTokenAuthGroup.get("\(RoutesEnum.guides.rawValue)", "\(RouteParameter.status.rawValue)", use: guideController.getByStatus)
+    adminTokenAuthGroup.get("\(RoutesEnum.guides.rawValue)", "\(RouteParameter.term)", use: guideController.search)
+
     
     
     
@@ -64,6 +69,18 @@ func routes(_ app: Application) throws {
     adminTokenAuthGroup.get("\(RoutesEnum.articles.rawValue)", use: articleController.getAll)
     adminTokenAuthGroup.patch("\(RoutesEnum.articles.rawValue)",  "\(RouteParameter.slug.rawValue)", use: articleController.update)
     adminTokenAuthGroup.delete("\(RoutesEnum.articles.rawValue)",  "\(RouteParameter.slug.rawValue)", use: articleController.delete)
+    adminTokenAuthGroup.get("\(RoutesEnum.articles.rawValue)", "\(RouteParameter.status.rawValue)", use: articleController.getByStatus)
+    adminTokenAuthGroup.get("\(RoutesEnum.articles.rawValue)", "\(RouteParameter.term)", use: articleController.search)
+    
+    
+    adminTokenAuthGroup.post("\(RoutesEnum.sessions.rawValue)", use: sessionController.create)
+    adminTokenAuthGroup.get("\(RoutesEnum.sessions.rawValue)",  "\(RouteParameter.slug.rawValue)", use: sessionController.get)
+    adminTokenAuthGroup.get("\(RoutesEnum.sessions.rawValue)", use: sessionController.getAll)
+    adminTokenAuthGroup.patch("\(RoutesEnum.sessions.rawValue)",  "\(RouteParameter.slug.rawValue)", use: sessionController.update)
+    adminTokenAuthGroup.delete("\(RoutesEnum.sessions.rawValue)",  "\(RouteParameter.slug.rawValue)", use: sessionController.delete)
+    adminTokenAuthGroup.get("\(RoutesEnum.sessions.rawValue)", "\(RouteParameter.status.rawValue)", use: sessionController.getByStatus)
+    adminTokenAuthGroup.get("\(RoutesEnum.sessions.rawValue)", "\(RoutesEnum.search.rawValue)", use: sessionController.search)
+
 
 
 }

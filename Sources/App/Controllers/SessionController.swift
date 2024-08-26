@@ -47,3 +47,20 @@ struct SessionController: ContentHandlerProtocol {
     
     
 }
+
+
+extension SessionController: BackendFilterHandlerProtocol{
+     func getByStatus(_ req: Vapor.Request) async throws -> [SessionModel] {
+        let status =  req.parameters.get("slug")
+         let sessionService  = SessionsService()
+        return try await sessionService.getByStatus(req, status: status!)
+    }
+    
+    func search(_ req: Vapor.Request) async throws -> [SessionModel] {
+        let term =  req.parameters.get("term")
+        let sessionService  = SessionsService()
+        return try await sessionService.search(req, term: term!)
+    }
+    
+}
+

@@ -49,3 +49,24 @@ struct GuideController: ContentHandlerProtocol {
 
 }
 
+
+extension GuideController: BackendFilterHandlerProtocol{
+     func getByStatus(_ req: Vapor.Request) async throws -> [GuideModel] {
+        let status =  req.parameters.get("slug")
+         let guideService  = GuideService()
+        return try await guideService.getByStatus(req, status: status!)
+    }
+    
+    func search(_ req: Vapor.Request) async throws -> [GuideModel] {
+        let term =  req.parameters.get("term")
+        let guideService  = GuideService()
+        return try await guideService.search(req, term: term!)
+    }
+    
+}
+
+
+
+
+
+
