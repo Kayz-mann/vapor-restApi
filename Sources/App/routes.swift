@@ -18,6 +18,10 @@ func routes(_ app: Application) throws {
     let adminMiddleWare = CheckAdminMiddleware()
     let adminTokenAuthGroup = app.routes.grouped(tokenAuthMiddleWare, adminMiddleWare)
     
+    //student auth
+    let studentMiddleWare = CheckStudentMiddleware()
+    let studentTokenAuthGroup =  app.routes.grouped(tokenAuthMiddleWare, studentMiddleWare)
+    
     //controllers
     let authController = AuthController()
     let userController = UserController()
@@ -30,11 +34,23 @@ func routes(_ app: Application) throws {
     basicAuthGroup.post("login", use: authController.loginHandler)
     
     //registered user routes
-    basicAuthGroup.post("register", use: userController.create)
-    tokenAuthGroup.get("profile", use: userController.get)
-    tokenAuthGroup.patch("profile", "update", use: userController.update)
-    tokenAuthGroup.delete("profile", "delete", use: userController.delete)
+    basicAuthGroup.post("users", "\(RoutesEnum.register.rawValue)", use: userController.create)
+    tokenAuthGroup.get("users", "\(RoutesEnum.profile.rawValue)", use: userController.get)
+    tokenAuthGroup.patch("users", "\(RoutesEnum.profile.rawValue)", "\(RoutesEnum.update.rawValue)", use: userController.update)
+    tokenAuthGroup.delete("users","\(RoutesEnum.profile.rawValue)", "\(RoutesEnum.delete.rawValue)", use: userController.delete)
     
+    
+   
+    
+    
+    //registered user content routes
+    app.routes.get("users", "\(RoutesEnum.courses.rawValue)", use: courseController.getAllObjects)
+    app.routes.get("users","\(RoutesEnum.courses.rawValue)", "\(RouteParameter.slug.rawValue)", use: courseController.getObject)
+    studentTokenAuthGroup.get("users","\(RoutesEnum.courses.rawValue)", "\(RouteParameter.slug.rawValue)", "session", "\(RouteParameter.article.rawValue)", use: sessionController.getSelectedObject)
+    app.routes.get("users","\(RoutesEnum.guides.rawValue)", use: guideController.getAllObjects)
+    app.routes.get("users","\(RoutesEnum.guides.rawValue)", "\(RouteParameter.slug.rawValue)", use: guideController.getObject)
+    studentTokenAuthGroup.get("users","\(RoutesEnum.guides.rawValue)", "\(RouteParameter.slug.rawValue)", "article", "\(RouteParameter.article.rawValue)", use: articleController.getSelectedObject)
+
     
     adminTokenAuthGroup.post("\(RoutesEnum.sessions.rawValue)", use: sessionController.create)
     adminTokenAuthGroup.get("\(RoutesEnum.sessions.rawValue)",  "\(RouteParameter.slug.rawValue)", use: sessionController.get)
@@ -45,7 +61,7 @@ func routes(_ app: Application) throws {
     
     adminTokenAuthGroup.post("\(RoutesEnum.courses.rawValue)", use: courseController.create)
       adminTokenAuthGroup.get("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.slug.rawValue)", use: courseController.get)
-      adminTokenAuthGroup.get("\(RoutesEnum.courses.rawValue)", use: courseController.getAll)
+      adminTokenAuthGroup.get("\(RoutesEnum.courses.rawValue)", use: courseController.getAllObjects)
       adminTokenAuthGroup.patch("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.slug.rawValue)", use: courseController.update)
       adminTokenAuthGroup.delete("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.slug.rawValue)", use: courseController.delete)
     adminTokenAuthGroup.get("\(RoutesEnum.courses.rawValue)", "\(RouteParameter.status.rawValue)", use: courseController.getByStatus)

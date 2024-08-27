@@ -13,8 +13,8 @@ import Vapor
 
 struct CreateSessionDTO: Content {
     let title: String?
-    let mp4URL: URL?
-    let hlsURL: URL?
+    let mp4URL: String?
+    let hlsURL: String?
     let publishDate: Date?
     let status: StatusEnum.RawValue?
     let price: PriceEnum.RawValue
@@ -26,8 +26,8 @@ struct CreateSessionDTO: Content {
 
 struct UpdateSessionDTO: Content {
     let title: String?
-    let mp4URL: URL?
-    let hlsURL: URL?
+    let mp4URL: String?
+    let hlsURL: String?
     let publishDate: Date?
     let status: StatusEnum.RawValue?
     let price: PriceEnum.RawValue

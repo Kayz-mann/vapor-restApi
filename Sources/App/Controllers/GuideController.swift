@@ -11,8 +11,8 @@ import Fluent
 
 struct GuideController: ContentHandlerProtocol {
     
-    
-    typealias answer = GuideModel
+
+    typealias answer = GuideContext
     typealias model = GuideModel
     typealias request = Request
     typealias status = HTTPStatus
@@ -64,6 +64,18 @@ extension GuideController: BackendFilterHandlerProtocol{
     }
     
 }
+
+extension GuideController: FrontendHandlerProtocol {
+    func getObject(_ req: Vapor.Request) async throws -> GuideContext{
+        let guide = req.parameters.get("slug")
+        return try await GuideService.getObject(req, object: guide!)
+    }
+    
+    func getAllObjects(_ req: Vapor.Request) async throws -> [GuideModel] {
+        return try await GuideService.getAllObjects(req)
+    }
+}
+
 
 
 

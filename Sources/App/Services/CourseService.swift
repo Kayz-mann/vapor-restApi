@@ -11,7 +11,7 @@ import Fluent
 
 struct CourseService: ContentProtocol {
     
-    typealias answer = CourseModel
+    typealias answer = CourseContext
     typealias model = CourseModel
     typealias request = Request
     typealias status = HTTPStatus
@@ -28,12 +28,12 @@ struct CourseService: ContentProtocol {
             description: createDTO.description,
             status: createDTO.status ?? StatusEnum.draft.rawValue, // Fixed the status field to use `createDTO.status`
             price: createDTO.price ?? PriceEnum.pro.rawValue,
-            headerImage: createDTO.headerImage,
+            headerImage: URL(string: createDTO.headerImage!),
             article: createDTO.article,
             topHexColor: createDTO.topHexColor,
             bottomHexColor: createDTO.bottomHexColor,
-            syllabus: createDTO.syllabus,
-            assets: createDTO.assets,
+            syllabus: URL(string: createDTO.syllabus!),
+            assets: URL(string: createDTO.assets!),
             author: author.id?.uuidString ?? "", // Set the author as the ID of the author user
             createdAt: Date(),
             updatedAt: Date(),
@@ -69,12 +69,12 @@ struct CourseService: ContentProtocol {
         course.description = updateDTO.description ?? course.description
         course.status = updateDTO.status ?? course.status
         course.price = updateDTO.price ?? course.price
-        course.headerImage = updateDTO.headerImage ?? course.headerImage
+        course.headerImage = URL(string: updateDTO.headerImage!) ?? course.headerImage
         course.article = updateDTO.article ?? course.article
         course.topHexColor = updateDTO.topHexColor ?? course.topHexColor
         course.bottomHexColor = updateDTO.bottomHexColor ?? course.bottomHexColor
-        course.syllabus = updateDTO.syllabus ?? course.syllabus
-        course.assets = updateDTO.assets ?? course.assets
+        course.syllabus = URL(string: updateDTO.syllabus!)  ?? course.syllabus
+        course.assets = URL(string: updateDTO.assets!) ?? course.assets
         course.publishDate = updateDTO.publishDate ?? course.publishDate
         
         try await course.save(on: req.db)
@@ -121,6 +121,40 @@ extension CourseService: BackendContentFilterProtocol {
                 or.filter(\.$title =~ term)
             }.all()
         
+        return courses
+    }
+    
+    
+}
+
+extension CourseService: FrontendProtocol {
+    static func getObject(_ req: Vapor.Request, object: String) async throws -> CourseContext {
+        let user =  try req.auth.get(UserModel.self)
+        
+        
+        guard let course = try await CourseModel.query(on: req.db)
+            .filter(\.$slug == object)
+            .filter(\.$status == StatusEnum.published.rawValue)
+            .first() else {
+                throw Abort(.notFound)
+            }
+
+        
+        let sessions =  try await SessionModel.query(on: req.db)
+            .filter(\.$course == course.id)
+            .filter(\.$status == StatusEnum.published.rawValue)
+            .all()
+        
+        //if user is a student the user gets courses with sessions else nil
+        return user?.role ==  RoleEnum.student.rawValue ? CourseContext(course: course, sessions: sessions): CourseContext(course: course, sessions: nil)
+        
+    }
+    
+        //return all published courses
+    static func getAllObjects(_ req: Vapor.Request) async throws -> [CourseModel] {
+        let courses =  try await CourseModel.query(on: req.db)
+            .filter(\.$status == StatusEnum.published.rawValue)
+            .all()
         return courses
     }
     

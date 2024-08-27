@@ -15,7 +15,7 @@ struct CreateArticleDTO: Content {
     let excerp: String?
     let content: String?
     let guide: GuideModel.IDValue?
-    let headerImage: URL?
+    let headerImage: String?
     let status: StatusEnum.RawValue?
     let price: PriceEnum.RawValue?
     let role: ContentRoleEnum.RawValue?
@@ -28,7 +28,7 @@ struct UpdateArticleDTO: Content {
     let excerp: String?
     let content: String?
     let guide: GuideModel.IDValue?
-    let headerImage: URL?
+    let headerImage: String?
     let status: StatusEnum.RawValue?
     let price: PriceEnum.RawValue?
     let role: ContentRoleEnum.RawValue?

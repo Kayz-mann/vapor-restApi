@@ -36,7 +36,7 @@ struct ArticleService: ContentProtocol {
             excerp: createDTO.excerp,
             content: createDTO.content,
             guide: createDTO.guide,
-            headerImage: createDTO.headerImage,
+            headerImage: URL(string: createDTO.headerImage!),
             author: "",
             status: createDTO.status ?? StatusEnum.draft.rawValue,
             price: createDTO.price ?? guide.price!,
@@ -83,7 +83,7 @@ struct ArticleService: ContentProtocol {
         article.guide =  updateDTO.guide ?? article.guide
         article.guide =  guide.id
         article.price = guide.price
-        article.headerImage = updateDTO.headerImage ?? article.headerImage
+        article.headerImage = URL(string: updateDTO.headerImage!) ?? article.headerImage
         article.status =  updateDTO.status ?? article.status
         article.role = updateDTO.role ?? article.role
         article.publishDate =  updateDTO.publishDate ?? article.publishDate
@@ -122,7 +122,7 @@ extension ArticleService: TransformProtocol {
 
 
 extension ArticleService: BackendContentFilterProtocol {
-   static func getByStatus(_ req: Vapor.Request, status: StatusEnum.RawValue) async throws -> [ArticleModel] {
+    func getByStatus(_ req: Vapor.Request, status: StatusEnum.RawValue) async throws -> [ArticleModel] {
         let articles = try await ArticleModel.query(on: req.db)
             .filter(\.$status == status)
             .all()
@@ -131,13 +131,31 @@ extension ArticleService: BackendContentFilterProtocol {
     }
     
     
-   static func search(_ req: Vapor.Request, term: String) async throws -> [ArticleModel] {
+    func search(_ req: Vapor.Request, term: String) async throws -> [ArticleModel] {
         let query =  try await ArticleModel.query(on: req.db)
             .group(.or) { or in
                 or.filter(\.$title =~ term)
             }.all()
         
         return query
+        
+    }
+    
+    
+}
+
+extension ArticleService: GetSelectedObjectProtocol {
+    static func getSelectedObject(_ req: Vapor.Request, object: String) async throws -> ArticleModel {
+        let user =  req.auth.get(UserModel.self)
+        
+        guard let article =  try await ArticleModel.query(on: req.db)
+            .filter(\.$slug ==  object)
+            .filter(\.$status ==  StatusEnum.published.rawValue)
+            .first() else {
+            throw Abort(.notFound)
+        }
+        
+        return article
         
     }
     

@@ -50,13 +50,22 @@ struct ArticleController: ContentHandlerProtocol {
 
 extension ArticleController: BackendFilterHandlerProtocol {
     func getByStatus(_ req: Vapor.Request) async throws -> [ArticleModel] {
-        let status =  req.parameters.get("slug")
-        return try await ArticleService.getByStatus(req, status: status!)
+        let status = req.parameters.get("slug")
+        let service = ArticleService()
+        return try await service.getByStatus(req, status: status!)
     }
     
     func search(_ req: Vapor.Request) async throws -> [ArticleModel] {
-        let term =  req.parameters.get("term")
-        return try await ArticleService.search(req, term: term!)
+        let term = req.parameters.get("term")
+        let service = ArticleService()
+        return try await service.search(req, term: term!)
     }
-    
+}
+
+
+extension ArticleController: GetSelectedObjectHandler {
+    func getSelectedObject(_ req: Vapor.Request) async throws -> ArticleModel {
+        let article =  req.parameters.get("articleSlug")
+        return try await ArticleService.getSelectedObject(req, object: article!)
+    }
 }

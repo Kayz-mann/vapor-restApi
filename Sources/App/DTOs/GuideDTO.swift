@@ -12,7 +12,7 @@ import Fluent
 struct CreateGuideDTO: Content {
     let title: String?
     let description: String?
-    let headerImage: URL?
+    let headerImage: String?
     let price: PriceEnum.RawValue?
     let status: StatusEnum.RawValue?
     let tags: [String]?
@@ -22,7 +22,7 @@ struct CreateGuideDTO: Content {
 struct UpdateGuideDTO: Content {
     let title: String?
     let description: String?
-    let headerImage: URL?
+    let headerImage: String?
     let price: PriceEnum.RawValue?
     let status: StatusEnum.RawValue?
     let tags: [String]?

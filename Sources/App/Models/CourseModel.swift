@@ -49,7 +49,7 @@ final class CourseModel: Model {
     var syllabus: URL?
     
     @OptionalField(key: FieldKeys.assets)
-    var assets: String?
+    var assets: URL?
     
     @OptionalField(key: FieldKeys.author)
     var author: String?
@@ -68,7 +68,7 @@ final class CourseModel: Model {
         
     }
     
-    init(title: String?, slug: String?, tags: [String]?, description: String?, status: StatusEnum.RawValue, price: PriceEnum.RawValue, headerImage: URL?, article: String?, topHexColor: String?, bottomHexColor: String?, syllabus: URL?, assets: String?, author: String?, createdAt: Date?, updatedAt: Date?, publishDate: Date?) {
+    init(title: String?, slug: String?, tags: [String]?, description: String?, status: StatusEnum.RawValue, price: PriceEnum.RawValue, headerImage: URL?, article: String?, topHexColor: String?, bottomHexColor: String?, syllabus: URL?, assets: URL?, author: String?, createdAt: Date?, updatedAt: Date?, publishDate: Date?) {
         self.title = title
         self.slug = slug
         self.tags = tags

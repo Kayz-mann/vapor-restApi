@@ -26,4 +26,5 @@ enum RouteParameter: String, Equatable {
     case id = ":id"
     case status = ":status"
     case term = ":term"
+    case article = ":articleSlug"
 }

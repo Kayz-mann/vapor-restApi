@@ -33,8 +33,8 @@ struct SessionsService: ContentProtocol {
         let slug =  createDTO.title?.replacingOccurrences(of: "", with: "_")
         let session = SessionModel(
             title: createDTO.title,
-            mp4URL: createDTO.mp4URL,
-            hlsURL: createDTO.hlsURL,
+            mp4URL: URL(string: createDTO.mp4URL!),
+            hlsURL: URL(string: createDTO.hlsURL!),
             createdAt: Date(),
             updatedAt: Date(),
             publishDate: createDTO.publishDate,
@@ -68,8 +68,8 @@ struct SessionsService: ContentProtocol {
         }
         
         session.title = updateDTO.title ?? session.title
-        session.mp4URL = updateDTO.mp4URL ?? session.mp4URL
-        session.hlsURL = updateDTO.hlsURL ?? session.hlsURL
+        session.mp4URL = URL(string: updateDTO.mp4URL!) ?? session.mp4URL
+        session.hlsURL = URL(string: updateDTO.hlsURL!) ?? session.hlsURL
         session.publishDate = updateDTO.publishDate ?? session.publishDate
         session.price = updateDTO.price ?? session.price
         session.article = updateDTO.article ?? session.article
@@ -127,5 +127,25 @@ extension SessionsService: BackendContentFilterProtocol {
     
     
 }
+
+
+extension SessionsService: GetSelectedObjectProtocol {
+    static func getSelectedObject(_ req: Vapor.Request, object: String) async throws -> SessionModel {
+        let user =  req.auth.get(UserModel.self)
+        
+        guard let session =  try await SessionModel.query(on: req.db)
+            .filter(\.$slug ==  object)
+            .filter(\.$status ==  StatusEnum.published.rawValue)
+            .first() else {
+            throw Abort(.notFound)
+        }
+        
+        return session
+        
+    }
+    
+    
+}
+
 
 

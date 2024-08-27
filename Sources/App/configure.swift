@@ -9,11 +9,11 @@ public func configure(_ app: Application) async throws {
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
     app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
-        hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-        port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
-        username: Environment.get("DATABASE_USERNAME") ?? "elearningdb",
-        password: Environment.get("DATABASE_PASSWORD") ?? "",
-        database: Environment.get("DATABASE_NAME") ?? "elearningdb",
+        hostname: Environment.get("localhost") ?? "localhost",
+        port: Environment.get("5432").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
+        username: Environment.get("elearningdb") ?? "elearningdb",
+        password: Environment.get("tetraoxochamber4") ?? "",
+        database: Environment.get("elearningdb") ?? "elearningdb",
         tls: .prefer(try .init(configuration: .clientDefault)))
     ), as: .psql)
 
@@ -38,3 +38,4 @@ public func configure(_ app: Application) async throws {
     print(Environment.get("DATABASE_USERNAME")) // Should print "elearningDB"
 
 }
+

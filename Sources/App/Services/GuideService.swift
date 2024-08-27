@@ -12,7 +12,7 @@ import Vapor
 struct GuideService: ContentProtocol {
 
     
-    typealias answer = GuideModel
+    typealias answer = GuideContext
     
     typealias model = GuideModel
     
@@ -32,7 +32,7 @@ struct GuideService: ContentProtocol {
         let guide = GuideModel(
             title: createDTO.title,
             description: createDTO.description,
-            headerImage: createDTO.headerImage,
+            headerImage: URL(string: createDTO.headerImage!),
             price: createDTO.price,
             status: createDTO.status ?? StatusEnum.draft.rawValue,
             author: fullAuthor,
@@ -67,7 +67,7 @@ struct GuideService: ContentProtocol {
         
         guide.title = updateDTO.title ?? guide.title
         guide.description = updateDTO.description ?? guide.description
-        guide.headerImage = updateDTO.headerImage ?? guide.headerImage
+        guide.headerImage =  URL(string: updateDTO.headerImage!) ??  guide.headerImage
         guide.price = updateDTO.price ?? guide.price
         guide.status = updateDTO.status ?? guide.status
         guide.tags = updateDTO.tags ?? guide.tags
@@ -122,4 +122,33 @@ extension GuideService: BackendContentFilterProtocol {
        return guides
    }
 
+}
+
+extension GuideService: FrontendProtocol {
+    static func getObject(_ req: Vapor.Request, object: String) async throws -> GuideContext {
+        let user =  req.auth.get(UserModel.self)
+        
+        guard let guide =  try await GuideModel.query(on: req.db)
+            .filter(\.$slug ==  object)
+            .filter(\.$status == StatusEnum.published.rawValue)
+            .first() else {
+            throw Abort(.notFound)
+        }
+        
+        let articles =  try await ArticleModel.query(on: req.db)
+            .filter(\.$guide == guide.id)
+            .filter(\.$status ==  StatusEnum.published.rawValue)
+            .all()
+        
+        return user?.role == RoleEnum.student.rawValue ? GuideContext(guide: guide, articles: articles) : GuideContext(guide: guide, articles: nil)
+    }
+    
+    static func getAllObjects(_ req: Vapor.Request) async throws -> [GuideModel] {
+        let guide =  try await GuideModel.query(on: req.db)
+            .filter(\.$status ==  StatusEnum.published.rawValue)
+            .all()
+        return guide
+    }
+    
+    
 }

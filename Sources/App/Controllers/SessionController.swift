@@ -64,3 +64,11 @@ extension SessionController: BackendFilterHandlerProtocol{
     
 }
 
+extension SessionController: GetSelectedObjectHandler {
+    func getSelectedObject(_ req: Vapor.Request) async throws -> SessionModel {
+        let article =  req.parameters.get("sessionSlug")
+        return try await SessionsService.getSelectedObject(req, object: article!)
+    }
+}
+
+

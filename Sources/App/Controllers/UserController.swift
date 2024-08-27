@@ -44,6 +44,7 @@ extension UserController: SearchUserProtocol {
     func search(_ req: Request, term: String) async throws -> [UserModel.Public] {
         let term =  try req.parameters.get("term")
         
-        return try await UserServices.search(req, term: term!)
+        let userServices =  UserServices()
+        return try await userServices.search(req, term: term!)
     }
 }

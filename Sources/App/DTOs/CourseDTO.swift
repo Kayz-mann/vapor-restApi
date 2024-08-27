@@ -15,10 +15,10 @@ struct CreateCourseDTO: Content {
     let description: String?
     let status: StatusEnum.RawValue
     let price: PriceEnum.RawValue
-    let headerImage: URL?
+    let headerImage: String?
     let topHexColor: String?
     let bottomHexColor: String?
-    let syllabus: URL?
+    let syllabus: String?
     let assets: String?
     let article: String?
     let publishDate: Date?
@@ -30,10 +30,10 @@ struct UpdateCourseDTO: Content {
     let description: String?
     let status: StatusEnum.RawValue
     let price: PriceEnum.RawValue
-    let headerImage: URL?
+    let headerImage: String?
     let topHexColor: String?
     let bottomHexColor: String?
-    let syllabus: URL?
+    let syllabus: String?
     let assets: String?
     let article: String?
     let publishDate: Date?

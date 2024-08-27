@@ -29,10 +29,12 @@ protocol ContentHandlerProtocol {
     associatedtype answer
     associatedtype request
     associatedtype status
+    associatedtype model
     
-    func create(_ req: request) async throws -> answer
-    func get(_ req: request) async throws -> answer
-    func update(_ req: request) async throws -> answer
+    func create(_ req: request) async throws -> model
+    func get(_ req: request) async throws -> model
+    func update(_ req: request) async throws -> model
     func delete(_ req: request) async throws -> status
 }
+
 
