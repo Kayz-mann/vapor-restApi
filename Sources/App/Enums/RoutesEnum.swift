@@ -19,6 +19,7 @@ enum RoutesEnum: String {
     case update
     case users
     case search
+    case status
 }
 
 enum RouteParameter: String, Equatable {

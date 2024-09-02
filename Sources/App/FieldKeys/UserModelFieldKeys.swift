@@ -8,6 +8,7 @@
 import Foundation
 import Fluent
 
+
 extension UserModel {
     struct FieldKeys {
         static var name: FieldKey {"name"}

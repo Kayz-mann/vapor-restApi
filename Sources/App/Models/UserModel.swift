@@ -9,11 +9,12 @@ import Foundation
 import Vapor
 import Fluent
 
+
 final class UserModel: Model {
     
-    static var schema: String = SchemaEnum.users.rawValue
+    static let schema: String = SchemaEnum.users.rawValue
     
-    @ID
+    @ID(key: .id)
     var id: UUID?
     
     @OptionalField(key: FieldKeys.name)
@@ -71,8 +72,10 @@ final class UserModel: Model {
     init () {}
     
     //create
-    init(username: String?, email: String, password: String, role: RoleEnum.RawValue, createdAt: Date?, updatedAt: Date?) {
+    init(id: UUID? ,username: String?, email: String, password: String, role: RoleEnum.RawValue, createdAt: Date?, updatedAt: Date?, name: String?){
+        self.id = id
         self.userName  = username
+        self.name = name
         self.email = email
         self.password = password
         self.role = role
@@ -82,7 +85,8 @@ final class UserModel: Model {
     
     
     //update
-    init(name: String?, lastName: String?, userName: String?, email: String, password: String, city: String?, postalcode: String?, country: String?, bio: String?, createdAt: Date?, updateAt: Date?) {
+    init(id: UUID? ,name: String?, lastName: String?, userName: String?, email: String, password: String, city: String?, postalcode: String?, country: String?, bio: String?, createdAt: Date?, updateAt: Date?) {
+        self.id = id
         self.name = name
         self.lastName = lastName
         self.userName = userName
@@ -122,7 +126,7 @@ final class UserModel: Model {
         var id: UUID?
         var userName: String?
         var email: String
-        var name: String?
+        var name: String? =  nil
         var lastName: String?
         var updatedAt: Date?
         var city: String?

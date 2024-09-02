@@ -12,6 +12,7 @@ import Vapor
 struct CreateUserDTO: Content {
     let email: String
     let password: String
+    let name: String?
     let verify: String
     let userName: String?
 }

@@ -9,11 +9,11 @@ public func configure(_ app: Application) async throws {
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
     app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
-        hostname: Environment.get("localhost") ?? "localhost",
-        port: Environment.get("5432").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
-        username: Environment.get("elearningdb") ?? "elearningdb",
-        password: Environment.get("tetraoxochamber4") ?? "",
-        database: Environment.get("elearningdb") ?? "elearningdb",
+        hostname: Environment.get("DATABASE_HOST") ?? "localhost",
+        port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
+        username: Environment.get("DATABASE_USERNAME") ?? "elearningdb",
+        password: Environment.get("DATABASE_PASSWORD") ?? "",
+        database: Environment.get("DATABASE_NAME") ?? "elearningdb",
         tls: .prefer(try .init(configuration: .clientDefault)))
     ), as: .psql)
 
@@ -26,16 +26,11 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(TokenModelMigration())
     
     //Seed Setup
-    app.migrations.add(CreateUserSeed())
+//    app.migrations.add(CreateUserSeed())
     
-    try app.autoMigrate().wait()
-    
+//    try app.autoMigrate().wait()
     
     // register routes
     try routes(app)
     
-    print(Environment.get("DATABASE_HOST")) // Should print "localhost"
-    print(Environment.get("DATABASE_USERNAME")) // Should print "elearningDB"
-
 }
-

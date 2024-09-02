@@ -26,17 +26,20 @@ struct UserServices: UserProtocol {
     
     static func create(_ req: Vapor.Request, _createDTO createDTO: CreateUserDTO) async throws -> UserModel.Public {
         let user = UserModel(
+            id: UUID(),
             username: createDTO.userName,
             email: createDTO.email,
             password: try Bcrypt.hash(createDTO.password),
             role: RoleEnum.registered.rawValue,
             createdAt: Date(),
-            updatedAt: Date())
+            updatedAt: Date(),
+            name: createDTO.name
+        )
         
         try await user.save(on: req.db)
         return user.convertToPublic()
     }
-    
+
     static func get(_ req: Vapor.Request, object: String) async throws -> UserModel.Public {
         let uuid = UUID(uuidString: object)
         
