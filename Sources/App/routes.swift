@@ -35,6 +35,9 @@ func routes(_ app: Application) throws {
     
     // User Routes
     basicAuthGroup.post("users", "\(RoutesEnum.register.rawValue)", use: userController.create)
+//    app.post("users", "\(RoutesEnum.register.rawValue)", use: userController.create)
+
+    tokenAuthGroup.get("users", "verify", ":id", use: userController.verify)
     tokenAuthGroup.get("users", "\(RoutesEnum.profile.rawValue)", use: userController.get)
     tokenAuthGroup.patch("users", "\(RoutesEnum.profile.rawValue)", "\(RoutesEnum.update.rawValue)", use: userController.update)
     tokenAuthGroup.delete("users", "\(RoutesEnum.profile.rawValue)", "\(RoutesEnum.delete.rawValue)", use: userController.delete)

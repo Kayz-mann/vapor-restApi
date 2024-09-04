@@ -17,8 +17,8 @@ final class UserModel: Model {
     @ID(key: .id)
     var id: UUID?
     
-    @OptionalField(key: FieldKeys.name)
-    var name: String?
+    @Field(key: FieldKeys.name)
+    var name: String
     
     @OptionalField(key: FieldKeys.lastName)
     var lastName: String?
@@ -32,6 +32,9 @@ final class UserModel: Model {
     @Field(key: FieldKeys.password)
     var password: String
     
+    @Field(key: FieldKeys.verify)
+    var verify: Bool?
+    
     @OptionalField(key: FieldKeys.city)
     var city: String?
     
@@ -44,8 +47,8 @@ final class UserModel: Model {
     @OptionalField(key: FieldKeys.country)
     var country: String?
     
-    @Field(key: FieldKeys.role)
-    var role: RoleEnum.RawValue
+    @OptionalField(key: FieldKeys.role)
+    var role: RoleEnum.RawValue?
     
     @OptionalField(key: FieldKeys.subscriptionIsActiveTill)
     var subscriptionIsActiveTill: Date?
@@ -72,20 +75,20 @@ final class UserModel: Model {
     init () {}
     
     //create
-    init(id: UUID? ,username: String?, email: String, password: String, role: RoleEnum.RawValue, createdAt: Date?, updatedAt: Date?, name: String?){
+    init(id: UUID? ,userName: String?, email: String, password: String, role: RoleEnum.RawValue?, createdAt: Date?, updatedAt: Date?, name: String, verify: Bool?) {
         self.id = id
-        self.userName  = username
+        self.userName = userName
         self.name = name
         self.email = email
         self.password = password
         self.role = role
+        self.verify = false
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
     
-    
     //update
-    init(id: UUID? ,name: String?, lastName: String?, userName: String?, email: String, password: String, city: String?, postalcode: String?, country: String?, bio: String?, createdAt: Date?, updateAt: Date?) {
+    init(id: UUID? ,name: String, lastName: String?, userName: String?, email: String, password: String, city: String?, postalcode: String?, country: String?, bio: String?, createdAt: Date?, updateAt: Date?) {
         self.id = id
         self.name = name
         self.lastName = lastName
@@ -135,7 +138,7 @@ final class UserModel: Model {
         var completedCourses: [UUID]?
         var bio: String?
         
-        init(id: UUID? , userName: String?, email: String , name: String?, lastName: String? , updatedAt: Date? , city: String? , subscriptionIsActiveTill: Date? , myCourses: [UUID]? , completedCourses: [UUID]? , bio: String? ) {
+        init(id: UUID? , userName: String?, email: String , name: String, lastName: String? , updatedAt: Date? , city: String? , subscriptionIsActiveTill: Date? , myCourses: [UUID]? , completedCourses: [UUID]? , bio: String? ) {
             self.id = id
             self.userName = userName
             self.email = email

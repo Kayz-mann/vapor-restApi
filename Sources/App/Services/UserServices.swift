@@ -8,6 +8,7 @@
 import Foundation
 import Fluent
 import Vapor
+import PostgresNIO
 
 struct UserServices: UserProtocol {
     
@@ -25,19 +26,35 @@ struct UserServices: UserProtocol {
 
     
     static func create(_ req: Vapor.Request, _createDTO createDTO: CreateUserDTO) async throws -> UserModel.Public {
+        print("Inside UserServices.create")
+        print("Received createDTO: \(createDTO)")
+        
+        print("Creating new UserModel")
         let user = UserModel(
             id: UUID(),
-            username: createDTO.userName,
+            userName: createDTO.userName,
             email: createDTO.email,
             password: try Bcrypt.hash(createDTO.password),
             role: RoleEnum.registered.rawValue,
             createdAt: Date(),
             updatedAt: Date(),
-            name: createDTO.name
+            name: createDTO.name,
+            verify: false
         )
+        print("Created UserModel: \(user)")
         
-        try await user.save(on: req.db)
-        return user.convertToPublic()
+        do {
+            print("Attempting to save user...")
+            try await user.save(on: req.db)
+            print("User saved successfully")
+            return user.convertToPublic()
+        } catch let error as PostgresError {
+            print("PostgreSQL error: \(error)")
+            throw Abort(.internalServerError, reason: "Database error: \(error.localizedDescription)")
+        } catch {
+            print("Unexpected error: \(error)")
+            throw Abort(.internalServerError, reason: "An unexpected error occurred: \(error.localizedDescription)")
+        }
     }
 
     static func get(_ req: Vapor.Request, object: String) async throws -> UserModel.Public {
@@ -67,6 +84,15 @@ struct UserServices: UserProtocol {
         user.bio = updateDTO.bio ?? user.bio
         
         try await user.save(on: req.db)
+        
+//        // Generate verification link
+//        let verifyLink = generateVerificationLink(for: user)
+//        
+//        print("user verification link", verifyLink)
+        
+        // Send verification link to email
+//        try sendVerificationEmail(to: user.email, with: verifyLink)
+
         return user.convertToPublic()
 //        return .ok
     }
@@ -80,6 +106,15 @@ struct UserServices: UserProtocol {
         try await user.delete(on: req.db)
         return .ok
     }
+    
+    static func generateVerificationLink(for user: UserModel) -> String {
+          // Generate a unique verification link
+          return "http://elearningdb.com/verify/\(user.id!.uuidString)"
+      }
+      
+      static func sendVerificationEmail(to email: String, with link: String) throws {
+          // Implement email sending logic here
+      }
     
     
     
@@ -99,4 +134,17 @@ extension UserServices: SearchUserProtocol {
     }
     
     
+}
+
+struct CreateDatabaseQueryTestResult: Migration {
+    func prepare(on database: Database) -> EventLoopFuture<Void> {
+        return database.schema("database_query_test_results")
+            .id()
+            .field("value", .int, .required)
+            .create()
+    }
+
+    func revert(on database: Database) -> EventLoopFuture<Void> {
+        return database.schema("database_query_test_results").delete()
+    }
 }

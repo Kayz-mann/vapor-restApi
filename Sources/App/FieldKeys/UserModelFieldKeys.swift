@@ -16,6 +16,7 @@ extension UserModel {
         static var userName: FieldKey {"username"}
         static var email: FieldKey {"email"}
         static var password: FieldKey {"password"}
+        static var verify: FieldKey {"verify"}
         static var city: FieldKey {"city"}
         static var postalcode: FieldKey {"postalcode"}
         static var address: FieldKey {"address"}

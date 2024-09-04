@@ -1,5 +1,5 @@
 DATABASE_HOST = localhost
 DATABASE_PORT = 5432
-DATABASE_USERNAME = elearningDB
+DATABASE_USERNAME = elearningdb
 DATABASE_PASSWORD = tetraoxochamber4
-DATABASE_NAME = elearningDB
+DATABASE_NAME = elearningdb

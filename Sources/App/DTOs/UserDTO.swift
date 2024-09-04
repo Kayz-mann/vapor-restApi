@@ -10,11 +10,17 @@ import Fluent
 import Vapor
 
 struct CreateUserDTO: Content {
+    let userName: String
     let email: String
     let password: String
-    let name: String?
-    let verify: String
-    let userName: String?
+    let name: String
+    
+    enum CodingKeys: String, CodingKey {
+        case userName
+        case email
+        case password
+        case name
+    }
 }
 
 struct UpdateUserDTO: Content {
