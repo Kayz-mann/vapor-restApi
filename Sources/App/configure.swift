@@ -41,6 +41,8 @@ public func configure(_ app: Application) async throws {
     app.middleware.use(GlobalErrorMiddleware())
 
     //setup migration
+    app.migrations.add(AddColumnToUserMigration())
+    app.migrations.add(NewTestMigration())
     app.migrations.add(UserModelMigration())
     app.migrations.add(CourseModelMigration())
     app.migrations.add(SessionModelMigration())

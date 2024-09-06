@@ -10,6 +10,17 @@ import Fluent
 import Vapor
 import PostgresNIO
 
+struct ApiResponse<T: Content>: Content {
+    let status: String
+    let data: T?
+    let message: String?
+}
+
+struct ErrorResponse: Content {
+    let status: String
+    let message: String
+}
+
 
 struct UserController: UserHandlerProtocol {
     
@@ -17,28 +28,18 @@ struct UserController: UserHandlerProtocol {
     typealias request = Request
     typealias status = HTTPStatus
     
-    func create(_ req: Vapor.Request) async throws -> UserModel.Public {
-        print("Starting user creation process")
-        
-        do {
-            print("Testing database connection")
-            try await testDatabaseQuery(req)
-            
-            print("Decoding CreateUserDTO")
+    func create(_ req: Vapor.Request) async throws -> UserModel.Public {  
+        do { 
             let createDTO = try req.content.decode(CreateUserDTO.self)
-            print("CreateUserDTO decoded successfully: \(createDTO)")
             
-            print("Checking if user already exists")
-            if try await checkUserExists(req, email: createDTO.email) {
-                print("User with email \(createDTO.email) already exists")
-                throw Abort(.conflict, reason: "User with this email already exists")
-            }
-            
-            print("Calling UserServices.create")
-            let user = try await UserServices.create(req, _createDTO: createDTO)
-            print("User created successfully: \(user)")
-            
-            return user
+           if try await checkUserExists(req, email: createDTO.email) {
+               print("User with email \(createDTO.email) already exists")
+               throw Abort(.conflict, reason: "User with this email already exists")
+           }
+           
+            let user = try await UserServices.create(req, _createDTO: createDTO) 
+            return ApiResponse(status: "success", data: user, message: nil)
+
         } catch let error as DecodingError {
             print("Failed to decode CreateUserDTO: \(String(reflecting: error))")
             throw Abort(.badRequest, reason: "Invalid data format: \(error.localizedDescription)")
@@ -48,10 +49,7 @@ struct UserController: UserHandlerProtocol {
         } catch let error as PostgresError {
             print("PostgreSQL error in create: \(String(reflecting: error))")
             throw Abort(.internalServerError, reason: "Database error: \(error.localizedDescription)")
-        } catch {
-            print("Unexpected error in create: \(String(reflecting: error))")
-            throw Abort(.internalServerError, reason: "An unexpected error occurred: \(error.localizedDescription)")
-        }
+        } 
     }
     
     func verify(_ req: Vapor.Request) async throws -> HTTPStatus {

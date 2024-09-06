@@ -41,20 +41,17 @@ struct UserServices: UserProtocol {
             name: createDTO.name,
             verify: false
         )
-        print("Created UserModel: \(user)")
         
         do {
-            print("Attempting to save user...")
             try await user.save(on: req.db)
-            print("User saved successfully")
             return user.convertToPublic()
+
         } catch let error as PostgresError {
-            print("PostgreSQL error: \(error)")
             throw Abort(.internalServerError, reason: "Database error: \(error.localizedDescription)")
         } catch {
-            print("Unexpected error: \(error)")
             throw Abort(.internalServerError, reason: "An unexpected error occurred: \(error.localizedDescription)")
         }
+
     }
 
     static func get(_ req: Vapor.Request, object: String) async throws -> UserModel.Public {
