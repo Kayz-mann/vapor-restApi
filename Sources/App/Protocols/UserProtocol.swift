@@ -27,11 +27,11 @@ protocol UserProtocol {
 
 
 protocol UserHandlerProtocol {
-    associatedtype answer
+    associatedtype answer: Content
     associatedtype request
     associatedtype status
     
-    func create(_ req: request) async throws -> answer
+    func create(_ req: request) async throws -> ApiResponse<answer>
     func get(_ req: request) async throws -> answer
     func update(_ req: request) async throws -> answer
     func delete(_ req: request) async throws -> status

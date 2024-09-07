@@ -26,10 +26,7 @@ struct UserServices: UserProtocol {
 
     
     static func create(_ req: Vapor.Request, _createDTO createDTO: CreateUserDTO) async throws -> UserModel.Public {
-        print("Inside UserServices.create")
-        print("Received createDTO: \(createDTO)")
-        
-        print("Creating new UserModel")
+
         let user = UserModel(
             id: UUID(),
             userName: createDTO.userName,

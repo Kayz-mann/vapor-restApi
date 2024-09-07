@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  UserController.swift
 //  
 //
 //  Created by Balogun Kayode on 23/08/2024.
@@ -11,43 +11,36 @@ import Vapor
 import PostgresNIO
 
 struct ApiResponse<T: Content>: Content {
+    let statusCode: Int
     let status: String
     let data: T?
     let message: String?
 }
 
-struct ErrorResponse: Content {
-    let status: String
-    let message: String
-}
 
 
-struct UserController: UserHandlerProtocol {
+struct UserController: UserHandlerProtocol {    
     
     typealias answer = UserModel.Public
     typealias request = Request
     typealias status = HTTPStatus
     
-    func create(_ req: Vapor.Request) async throws -> UserModel.Public {  
-        do { 
+    func create(_ req: Vapor.Request) async throws -> ApiResponse<UserModel.Public> {
+        do {
             let createDTO = try req.content.decode(CreateUserDTO.self)
             
            if try await checkUserExists(req, email: createDTO.email) {
-               print("User with email \(createDTO.email) already exists")
                throw Abort(.conflict, reason: "User with this email already exists")
            }
-           
+
             let user = try await UserServices.create(req, _createDTO: createDTO) 
-            return ApiResponse(status: "success", data: user, message: nil)
+            return ApiResponse(statusCode: 200, status: "success", data: user, message: "User Created Successfully")
 
         } catch let error as DecodingError {
-            print("Failed to decode CreateUserDTO: \(String(reflecting: error))")
             throw Abort(.badRequest, reason: "Invalid data format: \(error.localizedDescription)")
         } catch let error as AbortError {
-            print("Abort error in create: \(String(reflecting: error))")
             throw error
         } catch let error as PostgresError {
-            print("PostgreSQL error in create: \(String(reflecting: error))")
             throw Abort(.internalServerError, reason: "Database error: \(error.localizedDescription)")
         } 
     }
