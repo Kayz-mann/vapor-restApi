@@ -55,8 +55,8 @@ public func configure(_ app: Application) async throws {
     // app.migrations.add(SeedContentMigration()) // Already seeded - disable to avoid duplicates
     
 //    try await app.autoMigrate().get()
-    
-    try app.autoMigrate().wait()
+
+    try await app.autoMigrate()
     
     // register routes
     try routes(app)

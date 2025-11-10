@@ -8,7 +8,7 @@ let package = Package(
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.99.3"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.119.0"),
         // 🗄 An ORM for SQL and NoSQL databases.
         .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
         // 🐘 Fluent driver for Postgres.
@@ -40,6 +40,6 @@ let package = Package(
 )
 
 var swiftSettings: [SwiftSetting] { [
-    .enableUpcomingFeature("DisableOutwardActorInference"),
-    .enableExperimentalFeature("StrictConcurrency"),
+    // .enableUpcomingFeature("DisableOutwardActorInference"), // Disabled for Swift 6 compatibility with Fluent
+    // .enableExperimentalFeature("StrictConcurrency"), // Disabled for Swift 6 compatibility with Fluent
 ] }
