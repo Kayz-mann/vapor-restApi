@@ -50,9 +50,9 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(ArticleModelMigration())
     app.migrations.add(TokenModelMigration())
     app.migrations.add(CreateDatabaseQueryTestResult())
-    
+
     //Seed Setup
-//    app.migrations.add(CreateUserSeed())
+    // app.migrations.add(SeedContentMigration()) // Already seeded - disable to avoid duplicates
     
 //    try await app.autoMigrate().get()
     

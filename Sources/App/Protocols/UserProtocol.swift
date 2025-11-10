@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  UserProtocol.swift
 //  
 //
 //  Created by Balogun Kayode on 20/08/2024.
@@ -25,6 +25,13 @@ protocol UserProtocol {
     static func delete(_ req: request, object: String) async throws -> status
 }
 
+struct ApiResponse<T: Content>: Content {
+    let statusCode: Int
+    let status: String
+    let data: T?
+    let message: String?
+}
+
 
 protocol UserHandlerProtocol {
     associatedtype answer: Content
@@ -33,7 +40,7 @@ protocol UserHandlerProtocol {
     
     func create(_ req: request) async throws -> ApiResponse<answer>
     func get(_ req: request) async throws -> answer
-    func update(_ req: request) async throws -> answer
+    func update(_ req: request) async throws -> ApiResponse<answer>
     func delete(_ req: request) async throws -> status
 }
 

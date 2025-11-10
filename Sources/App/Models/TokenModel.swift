@@ -5,47 +5,77 @@
 //  Created by Balogun Kayode on 22/08/2024.
 //
 
-import Foundation
-import Fluent
-import Vapor
+//
+// TokenModel.swift
+//
 
-final class TokenModel: Model {
-    static let schema: String = SchemaEnum.tokens.rawValue
+//
+//  TokenModel.swift
+//
+//  Created by Balogun Kayode on 22/08/2024.
+//
+
+import Foundation
+import Vapor
+import Fluent
+
+final class TokenModel: Model, Content {
+    static let schema = "tokens"
     
-    @ID
+    @ID(key: .id)
     var id: UUID?
     
-    @Field(key: FieldKeys.value)
+    @Field(key: "value")
     var value: String
     
-    @Parent(key: FieldKeys.userId)
-    var userID: UserModel
+    @Parent(key: "user_id")
+    var user: UserModel
+    
+    @Timestamp(key: "created_at", on: .create)
+    var createdAt: Date?
+    
+    @Field(key: "expires_at")  // Changed from @Timestamp to @Field
+    var expiresAt: Date
     
     init() {}
     
-    init(id: UUID? =  nil, value: String, userID: UserModel.IDValue) {
+    init(id: UUID? = nil, value: String, userID: UUID, expiresAt: Date? = nil) {
+        self.id = id
         self.value = value
-        self.$userID.id = userID
+        self.$user.id = userID
+        self.expiresAt = expiresAt ?? Date().addingTimeInterval(3600 * 24) // 24 hours from now
     }
-}
-
-extension TokenModel: Content {
     
-}
-
-extension TokenModel: ModelTokenAuthenticatable {
-    typealias user = App.UserModel
-    static var valueKey = \TokenModel.$value
-    static var userKey =  \TokenModel.$userID
-    
-    var isValid: Bool {
-        true
-    }
-}
-
-extension TokenModel {
     static func generate(for user: UserModel) throws -> TokenModel {
         let random = [UInt8].random(count: 16).base64
-        return try TokenModel(value: random, userID: user.requireID())
+        return TokenModel(value: random, userID: try user.requireID())
+    }
+}
+
+// MARK: - Authentication
+extension TokenModel: ModelTokenAuthenticatable {
+    static let valueKey = \TokenModel.$value
+    static let userKey = \TokenModel.$user
+    
+    var isValid: Bool {
+        expiresAt > Date()
+    }
+}
+
+// MARK: - Migration
+struct CreateTokenMigration: Migration {
+    func prepare(on database: Database) -> EventLoopFuture<Void> {
+        database.schema("tokens")
+            .id()
+            .field("value", .string, .required)
+            .field("user_id", .uuid, .required, .references("users", "id", onDelete: .cascade))
+            .field("created_at", .datetime)
+            .field("expires_at", .datetime, .required)  // Made expires_at required
+            .unique(on: "value")
+            .create()
+    }
+    
+    func revert(on database: Database) -> EventLoopFuture<Void> {
+        database.schema("tokens").delete()
     }
 }

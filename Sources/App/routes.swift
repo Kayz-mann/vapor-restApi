@@ -4,11 +4,42 @@ import Fluent
 import Vapor
 
 func routes(_ app: Application) throws {
+
+        app.get { req -> String in
+        return "Welcome to the API!"
+    }
+
+
+        // Health Check Route
+    app.get("health") { req -> String in
+        return "OK"
+    }
+
+
+    func getAllUsers(_ req: Request) -> EventLoopFuture<[UserModel]> {
+    return UserModel.query(on: req.db).all()
+}
+
+app.get("debug-users") { req in
+    return UserModel.query(on: req.db).all().map { users in
+        return users.map { user in
+            [
+                "email": user.email,
+                "hasPassword": String(!user.password.isEmpty),
+                "verified": String(user.verify ?? false)
+            ]
+        }
+    }
+}
+
+    
+
     
     // Auth Middleware
     let basicAuthMiddleware = UserModel.authenticator()
     let tokenAuthMiddleware = TokenModel.authenticator()
     let guardMiddleware = UserModel.guardMiddleware()
+    let protected = app.grouped(TokenModel.authenticator())
     
     // Route Groups
     let basicAuthGroup = app.routes.grouped(basicAuthMiddleware)
@@ -31,13 +62,20 @@ func routes(_ app: Application) throws {
     let sessionController = SessionController()
     
     // Authentication Routes
-    basicAuthGroup.post("login", use: authController.loginHandler)
+    // basicAuthGroup.post("login", use: authController.loginHandler)
+    app.post("login", use: authController.loginHandler)
+
+      protected.get("user", use: userController.get)
+      protected.put("user", use: userController.update)
+      protected.delete("user", use: userController.delete)
+
     
     // User Routes
     basicAuthGroup.post("users", "\(RoutesEnum.register.rawValue)", use: userController.create)
 //    app.post("users", "\(RoutesEnum.register.rawValue)", use: userController.create)
 
     tokenAuthGroup.get("users", "verify", ":id", use: userController.verify)
+    tokenAuthGroup.get("users", use: userController.get)
     tokenAuthGroup.get("users", "\(RoutesEnum.profile.rawValue)", use: userController.get)
     tokenAuthGroup.patch("users", "\(RoutesEnum.profile.rawValue)", "\(RoutesEnum.update.rawValue)", use: userController.update)
     tokenAuthGroup.delete("users", "\(RoutesEnum.profile.rawValue)", "\(RoutesEnum.delete.rawValue)", use: userController.delete)

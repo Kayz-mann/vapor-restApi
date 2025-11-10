@@ -10,13 +10,6 @@ import Fluent
 import Vapor
 import PostgresNIO
 
-struct ApiResponse<T: Content>: Content {
-    let statusCode: Int
-    let status: String
-    let data: T?
-    let message: String?
-}
-
 
 
 struct UserController: UserHandlerProtocol {    
@@ -25,7 +18,7 @@ struct UserController: UserHandlerProtocol {
     typealias request = Request
     typealias status = HTTPStatus
     
-    func create(_ req: Vapor.Request) async throws -> ApiResponse<UserModel.Public> {
+    func create(_ req: Vapor.Request) async throws ->ApiResponse<UserModel.Public> {
         do {
             let createDTO = try req.content.decode(CreateUserDTO.self)
             
@@ -65,16 +58,19 @@ struct UserController: UserHandlerProtocol {
         return .ok
     }
 
+
     
     func get(_ req: Vapor.Request) async throws -> UserModel.Public {
         let user =  try req.auth.require(UserModel.self)
         return try await UserServices.get(req, object: user.id!.uuidString)
     }
     
-    func update(_ req: Vapor.Request) async throws -> UserModel.Public {
+    func update(_ req: Vapor.Request) async throws -> ApiResponse<UserModel.Public> {
         let user =  try await req.auth.require(UserModel.self)
         let updatedUser = try req.content.decode(UpdateUserDTO.self)
-        return try await UserServices.update(req, object: user.id!.uuidString, updateDTO: updatedUser)
+         let result = try await UserServices.update(req, object: user.id!.uuidString, updateDTO: updatedUser)
+        return ApiResponse(statusCode: 200, status: "success", data: result, message: "User Updated Successfully")
+
     }
     
     func delete(_ req: Vapor.Request) async throws -> Vapor.HTTPStatus {

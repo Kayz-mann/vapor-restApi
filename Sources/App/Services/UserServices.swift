@@ -38,7 +38,7 @@ struct UserServices: UserProtocol {
             name: createDTO.name,
             verify: false
         )
-        
+
         do {
             try await user.save(on: req.db)
             return user.convertToPublic()

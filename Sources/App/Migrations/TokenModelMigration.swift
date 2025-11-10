@@ -13,11 +13,14 @@ struct TokenModelMigration: AsyncMigration {
     func prepare(on database: any Database) async throws {
         try await database.schema(TokenModel.schema)
             .id()
-            .field("value", .string, .required) // Match with TokenModel's `value` field
-            .field("user_id", .uuid, .required) // Ensure this matches the foreign key reference
+            .field("value", .string, .required)
+            .field("user_id", .uuid, .required, .references("users", "id", onDelete: .cascade))
+            .field("created_at", .datetime)
+            .field("expires_at", .datetime, .required)
+            .unique(on: "value")
             .create()
     }
-    
+
     func revert(on database: Database) async throws {
         try await database.schema(TokenModel.schema).delete()
     }
